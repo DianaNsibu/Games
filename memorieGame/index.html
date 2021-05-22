@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Memorie Game</title>
+        <style>
+            .grid{
+                display: flex;
+                flex-wrap: wrap;
+                height: 300px;
+                width: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <h3>Score:<span id="result"></span></h3>
+        <div class="grid">
+
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded',() => {});
+
+            const grid= document.querySelector('.grid');
+            const resultatDisplay = document.querySelector('#result');
+            var cardsChosen = []; //l'array dans laquelle se trouvent toutes les cartes sur lesquelles le jouerus à clicker. 
+            var cardsChosenId = []; // ID de la carte choisie.
+            var cardsWon=[]; //les cartes qui matchent.
+
+            //card options 
+            const cardArray = [
+                {
+                    name:'one',
+                    img: 'Images/1.png'
+                } ,
+                {
+                    name:'one',
+                    img: 'Images/1.png'
+                } ,
+                {
+                    name:'two',
+                    img: 'Images/3.png'
+                },
+                {
+                    name:'two',
+                    img: 'Images/3.png'
+                },
+                {
+                    name:'three',
+                    img: 'Images/4.png'
+                },
+                {
+                    name:'three',
+                    img: 'Images/4.png'
+                },
+                {
+                    name:'four',
+                    img: 'Images/6.png'
+                },
+                {
+                    name:'four',
+                    img: 'Images/6.png'
+                },
+                {
+                    name:'five',
+                    img: 'Images/7.png'
+                },
+                {
+                    name:'five',
+                    img: 'Images/7.png'
+                },
+                {
+                    name:'six',
+                    img: 'Images/8.png'
+                },
+                {
+                    name:'six',
+                    img: 'Images/8.png'
+                }
+
+
+            ];
+            
+            cardArray.sort(()=>0.5-Math.random()); //permet au jeu de changer l'emplacement des cartes
+
+
+            //create your board
+            function createBoard(){
+                //pour chaque element de l'array:
+                for(let i = 0; i < cardArray.length; i++){
+                    var card = document.createElement('img');
+                    card.setAttribute('src','Images/blank.png');
+                    card.setAttribute('data-id', i);
+                    card.addEventListener('click', flipCard);
+
+                    //a chaque fois qu'une carte est créée, elle s'ajoute dans la grille html .
+                    grid.appendChild(card);
+                }
+            }
+
+            //on va créer deux fonctions pour utiliser me jeu : flibcard pour retourner les cartes et check matches pour vérifier si les certes sont les mêmes
+            
+            function checkForMatch(){
+                var cards = document.querySelectorAll('img');
+                //les deux cartes choisies:
+                const optionOneId = cardsChosenId[0];
+                const optionTwoId = cardsChosenId[1];
+                //verifier le match : 
+                if (cardsChosen[0]=== cardsChosen[1]){
+                    alert('you find a match');
+                    //si les images matchent, on change l'image
+                    cards[optionOneId].setAttribute('src', 'Images/white.png');
+                    cards[optionTwoId].setAttribute('src', 'Images/white.png');
+                    //on push les cartes qui matchent dans l'array : 
+                    cardsWon.push(cardsChosen);
+                }else{
+                    //si les cartes ne matchent pas on les retourne:
+                    cards[optionOneId].setAttribute('src','Images/blank.png');
+                    cards[optionTwoId].setAttribute('src','Images/blank.png');
+                    alert('sorry, try again')
+                    
+                }
+                
+                //une fois que tout ceci est fait et que la partie est finie, on remet tout à zéro :
+                cardsChosen = [];
+                cardsChosenId= [];
+                
+                //on affiche les résulats dans l'html : 
+                resultatDisplay.textContent = cardsWon.length;
+                
+                //si on a trouvé tous les matchs : 
+                if (cardsWon.length === cardArray.length/2){
+                    resultatDisplay.textContent="Congratulation, you find them all";
+                }
+            }
+
+            function flipCard(){
+                var cardId = this.getAttribute('data-id');
+                cardsChosen.push(cardArray[cardId].name); //on push la carte qui a été retournée
+                cardsChosenId.push(cardId); //on push uniquement son ID 
+                this.setAttribute('src', cardArray[cardId].img);
+                
+                //on ne returne que deux cartes à la fois : 
+                if(cardsChosen.length === 2){
+                   setTimeout(checkForMatch, 500);
+                   }
+            }
+
+            createBoard();  //appel de la fonction
+
+
+
+        </script>
+    </body>
+</html>
